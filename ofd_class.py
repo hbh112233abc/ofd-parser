@@ -71,7 +71,7 @@ class CT_Path:
         return self.__FillColor
     def set_select_FillColor(self, Color):
         self.__FillColor = Color.split(' ')
-        
+
     def get_select_StrokeColor(self):
         return self.__StrokeColor
     def set_select_StrokeColor(self, Color):
@@ -92,7 +92,7 @@ class CT_Text:
         return self.__ID
     def set_ID(self, id):
         self.__ID = id
-    
+
     def get_Boundary(self):
         return self.__Boundary
     def set_Boundary(self, box):
@@ -108,7 +108,7 @@ class CT_Text:
     def set_Font(self, font):
         self.__Font = font
 
-    
+
     def get_TextCode(self):
         return self.__TextCode
     def set_TextCode(self, textcode):
@@ -127,12 +127,12 @@ class CT_Image:
         self.__Boundary = []
         self.__CTMArray = np.empty([3,3],dtype = float)
         self.__ResourseID = ''
-    
+
     def get_ID(self):
         return self.__ID
     def set_ID(self, id):
         self.__ID = id
-    
+
     def get_Boundary(self):
         return self.__Boundary
     def set_Boundary(self, box):
@@ -147,12 +147,12 @@ class CT_Image:
         return self.__ResourseID
     def set_ResourceID(self, resourceid):
         self.__ResourseID = resourceid
-    
+
 
 class CT_Composite:
     def __init__(self):
         self.__ResourseID = ''
-    
+
     def get_ResourseID(self):
         return self.__ResourseID
     def set_ResourceID(self, resourceid):
@@ -170,7 +170,7 @@ class CT_PageBlock:
         return self.__PathObject
     def set_PathObject(self, pathobject):
         self.__PathObject.append(pathobject)
-    
+
     def get_TextObject(self):
         return self.__TextObject
     def set_TextObject(self, textobject):
@@ -240,7 +240,7 @@ class TextCode:
         self.__Y = ''
         self.__DeltaX = []
         self.__DeltaY = []
-    
+
     def get_TextValue(self):
         return self.__TextValue
     def set_TextValue(self, textvalue):
@@ -274,7 +274,7 @@ class CT_Font:
         #select ↓
         self.__FamilyName = ''
         self.__FontFile = ''
-    
+
     def get_FontName(self):
         return self.__FontName
     def set_FontName(self, fontname):
@@ -308,7 +308,7 @@ class CT_MultiMedia:
         return self.__ID
     def set_ID(self, id):
         self.__ID = id
-    
+
     def get_Type(self):
         return self.__Type
     def set_Type(self, types):
@@ -340,7 +340,7 @@ class DocBody:
     def __init__(self):
         self.__DocInfo = DocInfo()
         self.__DocRoot = ''
-    
+
     def get_DocInfo(self):
         return self.__DocInfo
     def set_DocInfo(self, docinfo):
@@ -350,14 +350,14 @@ class DocBody:
         return self.__DocRoot
     def set_DocRoot(self, docroot):
         self.__DocRoot = docroot
-        
+
 
 class OFD:
     def __init__(self):
         self.__Version = ''
         self.__DocType = ''
         self.__DocBodies = DocBody()
-    
+
     def get_Version(self):
         return self.__Version
     def set_Version(self, version):
@@ -380,7 +380,7 @@ class CommonData:
         self.__PageArea = ''
         self.__PublicRes = ''
         self.__DocumentRes = ''
-    
+
     def get_MaxUnitId(self):
         return self.__MaxUnitId
     def set_MaxUnitId(self, maxunitid):
@@ -407,7 +407,7 @@ class PageArea:
         self.__PhysicalBox = []
         #select ↓
         self.__ApplicationBox = []
-        self.__ContentBox = []  
+        self.__ContentBox = []
         self.__BleedBox = []
 
     def get_PhysicalBox(self):
@@ -435,14 +435,14 @@ class PageNode:
     def __init__(self):
         self.BaseLoc = ''
         self.ID = ''
-    
+
 
 class Document:
     def __init__(self):
         self.__CommonData = CommonData()
         self.__Pages = []
         #select ↓
-        self.__Annotations = '' 
+        self.__Annotations = ''
 
     def get_CommonData(self):
         return self.__CommonData
@@ -464,7 +464,7 @@ class Layer:
     def __init__(self):
         self.__LayerId = ''
         self.__PageBlock = CT_PageBlock()
-        
+
     def get_LayerId(self):
         return self.__LayerId
     def set_LayerId(self, layerid):
@@ -479,12 +479,12 @@ class Layer:
 class Content:
     def __init__(self):
         self.__Layer = Layer()
-    
+
     def get_Layer(self):
         return self.__Layer
     def set_Layer(self, layer):
         self.__Layer = layer
-       
+
 
 class Page:
     def __init__(self):
@@ -515,7 +515,7 @@ class Pages:
     def __init__(self):
         self.__PageID = ''
         self.__PageN = Page()
-    
+
     def get_PageID(self):
         return self.__PageID
     def set_PageID(self, pageid):
@@ -549,7 +549,3 @@ class DocumentRes:
         return self.__MultiMedias
     def set_MultiMedias(self, meida):
         self.__MultiMedias.append(meida)
-
-    
-
-    

@@ -2,22 +2,16 @@ import zipfile
 import os
 from tempfile import NamedTemporaryFile
 
+import lxml.etree as ET
+
 from ofd_class import CT_Box, CT_CTM, CT_Path, CT_Text, CT_Image, CT_Composite, CT_PageBlock, CT_VectorG, CGTransform, TextCode, CT_Font, CT_MultiMedia
 from ofd_class import OFD, DocBody, DocInfo
 from ofd_class import Document, CommonData, PageNode, PageArea
 from ofd_class import Pages, Page, Content, Layer
 from ofd_class import PublicRes, DocumentRes
 
-# import lxml or ElementTree for XML parsing:
-try:
-    # lxml: best performance for XML processing
-    import lxml.etree as ET
-except ImportError:
-    import xml.etree.cElementTree as ET
-
 # docNS that have to be part of every ofd file
 FILE_DOC_NS = {'ofd': 'http://www.ofdspec.org/2016'}
-
 
 class OfdParser:
     def __init__(self,filePath):
@@ -96,7 +90,7 @@ class OfdParser:
                 ofd.set_DocType(root.items()[i][1])
                 #assert
                 assert ofd.get_DocType() == root.items()[i][1], 'DocType is wrong'
-        
+
         docinfo.set_DocId(Doc_Info.getchildren().pop().text)
         docbody.set_DocInfo(docinfo)
         docbody.set_DocRoot(Doc_Root.text)
@@ -209,7 +203,7 @@ class OfdParser:
                     Area = root[i]
                 if 'Content' in root[i].tag:
                     Contents = root[i]
-            
+
             for item in Area:
                 if 'PhysicalBox' in item.tag:
                     area.set_PhysicalBox(item.text)
@@ -227,7 +221,7 @@ class OfdParser:
             for i in range(len(Layers.items())):
                 if 'ID' in Layers.items()[i]:
                     layer.set_LayerId(Layers.items()[i][1])
-            
+
             for obj in Layers:
                 if 'PathObject' in obj.tag:
                     Path_temp = CT_Path()
@@ -254,7 +248,7 @@ class OfdParser:
                                 if 'Value'in item.items():
                                     Path_temp.set_select_StrokeColor(item.items()[0][1])
                     pageblock.set_PathObject(Path_temp)
-                
+
                 if 'TextObject' in obj.tag:
                     Text_temp = CT_Text()
                     for header in obj.items():
@@ -314,7 +308,7 @@ class OfdParser:
                         if 'ResourceID' in header:
                             Composite_temp.set_ResourceID(header[1])
                     pageblock.set_CompositeObject(Composite_temp)
-            layer.set_PageBlock(pageblock)             
+            layer.set_PageBlock(pageblock)
             content.set_Layer(layer)
             page.set_select_Content(content)
             pages.set_PageN(page)
@@ -337,7 +331,7 @@ class OfdParser:
         for header in root.items():
             if 'BaseLoc' in header:
                 publicres.BaseLoc = header[1]
-        
+
         for i in range(len(root)):
             if 'Fonts' in root[i].tag:
                 Fonts = root[i]
@@ -355,16 +349,19 @@ class OfdParser:
                 if 'FontFile' in second_item.tag:
                     font.set_select_FontFile(second_item.text)
             publicres.set_Fonts(font)
-        
+
         return publicres
 
-    
+
     def Parse_DocumentRes(self, OFD, Document, ofd_temp_path):
         path = OFD.get_DocBodies().get_DocRoot().split('/')
         file_dir = ''
         for i in range(len(path)-1):
             file_dir += path[i] + '/'
-        file_dir = ofd_temp_path + '/' + file_dir + Document.get_CommonData().get_DocumentRes()
+        document_res = Document.get_CommonData().get_DocumentRes()
+        if not document_res:
+            return
+        file_dir = os.path.join(ofd_temp_path, file_dir, document_res)
         #定义
         documentres = DocumentRes()
         #开始解析
@@ -374,7 +371,7 @@ class OfdParser:
         for header in root.items():
             if 'BaseLoc' in header:
                 documentres.BaseLoc = header[1]
-        
+
         for i in range(len(root)):
             if 'MultiMedias' in root[i].tag:
                 MultiMedias = root[i]
@@ -395,21 +392,21 @@ class OfdParser:
 
         return documentres
 
-    
+
     def Analysis_Of_OFD(self):
         #OFD
         print('-' * 46)
         print(' '*10 + '---Parsing OFD.xml---')
         print('Versions: {}\nDocType: {}'.format(self.OFD.get_Version(), self.OFD.get_DocType()))
         print('\n')
-        
+
         #Document
         print('-' * 46)
         print(' '*10 + '---Parsing Document.xml---')
         print(('MaxUnitID: {}').format(self.Document.get_CommonData().get_MaxUnitId()))
         print('Length of Pages: {}'.format(self.Document.get_Pages().__len__()))
         print('\n')
-        
+
         #Pages
         print('-' * 46)
         print(' '*10 + '---Parsing Pages---')
@@ -417,7 +414,7 @@ class OfdParser:
             print(('Pages{}' + ' '*4 + 'PageID: {}' + ' '*4 + 'PageRes: {}').format\
                 (i+1, self.Pages[i].get_PageID(), 'None' if self.Pages[i].get_PageN().\
                     get_select_PageRes() == '' else self.Pages[i].get_PageN().get_select_PageRes()))
-        
+
         #Res
         print('-' * 46)
         print(' '*10 + '---Parsing Res---')
@@ -436,4 +433,3 @@ class OfdParser:
                         self.DocumentRes.get_MultiMedias()[i].get_MediaFile(), self.DocumentRes.get_MultiMedias()[i].get_select_Format()))
         except:
             print('No DocumentRes')
-
